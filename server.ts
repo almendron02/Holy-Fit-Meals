@@ -22,6 +22,10 @@ async function startServer() {
   app.use(express.json());
 
   // API routes
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", stripeConfigured: !!stripe });
+  });
+
   app.post("/api/create-checkout-session", async (req, res) => {
     if (!stripe) {
       return res.status(500).json({ error: "Stripe is not configured" });
