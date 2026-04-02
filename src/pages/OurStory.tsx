@@ -33,29 +33,30 @@ export default function OurStory() {
   };
 
   return (
-    <main className="pt-20">
+    <main className="pt-16 md:pt-24">
       {/* Contact Form Section (Replaces Hero) */}
-      <section className="relative py-20 px-6 bg-surface-container-low overflow-hidden">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="relative py-12 md:py-24 px-4 md:px-6 bg-surface-container-low overflow-hidden">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
+            className="text-center lg:text-left"
           >
-            <span className="inline-block bg-primary-container text-on-primary-container font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider text-xs">Get in Touch</span>
-            <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-on-surface leading-tight mb-6 tracking-tighter">
+            <span className="inline-block bg-primary-container text-on-primary-container font-bold px-3 py-1 md:px-4 md:py-1.5 rounded-full mb-4 md:mb-6 uppercase tracking-wider text-[10px] md:text-xs">Get in Touch</span>
+            <h1 className="font-headline text-3xl md:text-7xl font-extrabold text-on-surface leading-tight mb-4 md:mb-6 tracking-tighter">
               Questions? <br /><span className="text-primary italic">We'd love to hear from you.</span>
             </h1>
-            <p className="text-on-surface-variant text-lg leading-relaxed mb-8 max-w-lg">
+            <p className="text-on-surface-variant text-base md:text-lg leading-relaxed mb-6 md:mb-8 max-w-lg mx-auto lg:mx-0">
               Whether you have a question about our menu, delivery zones, or just want to say hi, our team is ready to help.
             </p>
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center gap-4 text-on-surface">
-                <span className="material-symbols-outlined text-primary">mail</span>
-                <span className="font-medium">angelo.mgleza@gmail.com</span>
+            <div className="flex flex-col items-center lg:items-start gap-3 md:gap-4">
+              <div className="flex items-center gap-3 md:gap-4 text-on-surface">
+                <span className="material-symbols-outlined text-primary text-xl md:text-2xl">mail</span>
+                <span className="font-medium text-sm md:text-base">angelo.mgleza@gmail.com</span>
               </div>
-              <div className="flex items-center gap-4 text-on-surface">
-                <span className="material-symbols-outlined text-primary">location_on</span>
-                <span className="font-medium">Serving the Greater Miami Area</span>
+              <div className="flex items-center gap-3 md:gap-4 text-on-surface">
+                <span className="material-symbols-outlined text-primary text-xl md:text-2xl">location_on</span>
+                <span className="font-medium text-sm md:text-base">Serving the Greater Miami Area</span>
               </div>
             </div>
           </motion.div>
@@ -63,7 +64,7 @@ export default function OurStory() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-surface-container-lowest p-8 md:p-10 rounded-3xl shadow-ambient border border-outline-variant"
+            className="bg-surface-container-lowest p-6 md:p-10 rounded-3xl shadow-ambient border border-outline-variant"
           >
             {status === 'success' ? (
               <div className="text-center py-12">
@@ -146,8 +147,8 @@ export default function OurStory() {
       </section>
 
       {/* Story Section */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <section className="py-12 md:py-24 px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
           <div className="lg:col-span-7 relative">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -177,19 +178,19 @@ export default function OurStory() {
               />
             </motion.div>
           </div>
-          <div className="lg:col-span-5 flex flex-col gap-8">
-            <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-sm">
-              <span className="w-12 h-px bg-primary"></span> Our Legacy
+          <div className="lg:col-span-5 flex flex-col gap-4 md:gap-8">
+            <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs md:text-sm">
+              <span className="w-8 md:w-12 h-px bg-primary"></span> Our Legacy
             </div>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="font-headline text-4xl md:text-5xl font-extrabold text-on-surface leading-tight"
+              className="font-headline text-3xl md:text-5xl font-extrabold text-on-surface leading-tight"
             >
               A Heritage of <span className="text-secondary italic">Sabor</span> and Strength.
             </motion.h2>
-            <div className="space-y-6 text-on-surface-variant leading-relaxed text-lg">
+            <div className="space-y-4 md:space-y-6 text-on-surface-variant leading-relaxed text-base md:text-lg">
               <p>
                 Born and raised in the heart of Miami, our story began in a small apartment kitchen where the aroma of café con leche and sautéing onions filled the air. We grew up understanding that food wasn't just fuel—it was the rhythm of our family.
               </p>
@@ -205,21 +206,21 @@ export default function OurStory() {
       </section>
 
       {/* Mission Section */}
-      <section className="bg-surface-container-low py-32">
-        <div className="max-w-7xl mx-auto px-6 text-center">
+      <section className="bg-surface-container-low py-16 md:py-32">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 text-center">
           <div className="max-w-3xl mx-auto">
-            <span className="material-symbols-outlined text-primary text-6xl mb-6">favorite</span>
-            <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-on-surface mb-8">Our Mission</h2>
+            <span className="material-symbols-outlined text-primary text-4xl md:text-6xl mb-4 md:mb-6">favorite</span>
+            <h2 className="font-headline text-2xl md:text-5xl font-extrabold text-on-surface mb-4 md:mb-8">Our Mission</h2>
             <motion.p
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="font-headline text-4xl md:text-6xl font-black text-secondary leading-tight tracking-tight italic"
+              className="font-headline text-2xl md:text-6xl font-black text-secondary leading-tight tracking-tight italic"
             >
               "To Fuel Miami with Love, Heritage, and Freshness."
             </motion.p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 mt-12 md:mt-20">
             {[
               { title: "Authentic Flavors", desc: "Zero compromise on the spices and techniques that make Miami cuisine iconic.", icon: "restaurant", color: "border-primary" },
               { title: "Fitness Focused", desc: "Precision macros designed to help you crush your goals without feeling deprived.", icon: "fitness_center", color: "border-secondary" },
@@ -231,13 +232,13 @@ export default function OurStory() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.2 }}
-                className={`bg-surface-container-lowest p-10 rounded-lg shadow-sm border-t-4 ${item.color}`}
+                className={`bg-surface-container-lowest p-6 md:p-10 rounded-lg shadow-sm border-t-4 ${item.color}`}
               >
-                <div className="w-16 h-16 bg-surface-container p-4 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <span className="material-symbols-outlined text-3xl">{item.icon}</span>
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-surface-container p-3 md:p-4 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                  <span className="material-symbols-outlined text-2xl md:text-3xl">{item.icon}</span>
                 </div>
-                <h3 className="font-headline text-xl font-bold mb-4">{item.title}</h3>
-                <p className="text-on-surface-variant">{item.desc}</p>
+                <h3 className="font-headline text-lg md:text-xl font-bold mb-2 md:mb-4">{item.title}</h3>
+                <p className="text-on-surface-variant text-sm md:text-base">{item.desc}</p>
               </motion.div>
             ))}
           </div>

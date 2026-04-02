@@ -104,23 +104,28 @@ export default function Menu() {
   });
 
   return (
-    <main className="pt-24 pb-20 max-w-7xl mx-auto px-6">
-      <header className="mb-12">
+    <main className="pt-16 md:pt-24 pb-20 max-w-7xl mx-auto px-4 md:px-6">
+      <header className="mb-8 md:mb-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <span className="text-primary font-bold uppercase tracking-widest text-sm mb-2 block">Weekly Selection</span>
-            <h1 className="font-headline text-5xl md:text-6xl font-extrabold tracking-tight text-on-surface">Fresh From The <span className="text-primary">Kitchen.</span></h1>
+            <span className="text-primary font-bold uppercase tracking-widest text-xs md:text-sm mb-1 md:mb-2 block">Weekly Selection</span>
+            <h1 className="font-headline text-4xl md:text-6xl font-extrabold tracking-tight text-on-surface">Fresh From The <span className="text-primary">Kitchen.</span></h1>
           </div>
-          <div className="flex gap-2 bg-surface-container-low p-1.5 rounded-full overflow-x-auto no-scrollbar">
-            {['Cuban Classics', 'Performance', 'Low Carb', 'Plant-Based'].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`${activeCategory === cat ? 'bg-primary text-on-primary' : 'hover:bg-surface-container-high text-on-surface-variant'} px-6 py-2 rounded-full font-bold whitespace-nowrap transition-colors`}
-              >
-                {cat}
-              </button>
-            ))}
+          <div className="relative group">
+            <div className="flex gap-2 bg-surface-container-low p-1.5 rounded-full overflow-x-auto no-scrollbar scroll-smooth">
+              {['Cuban Classics', 'Performance', 'Low Carb', 'Plant-Based'].map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`${activeCategory === cat ? 'bg-primary text-on-primary' : 'hover:bg-surface-container-high text-on-surface-variant'} px-4 md:px-6 py-2 rounded-full font-bold whitespace-nowrap transition-colors text-sm md:text-base`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gradient-to-l from-surface-container-low to-transparent w-12 h-full pointer-events-none md:hidden flex items-center justify-end pr-2">
+              <span className="material-symbols-outlined text-primary text-sm animate-pulse">chevron_right</span>
+            </div>
           </div>
         </div>
       </header>
@@ -129,7 +134,7 @@ export default function Menu() {
         <section className="lg:col-span-8">
           <motion.div
             layout
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+            className="flex md:grid md:grid-cols-2 gap-4 md:gap-8 overflow-x-auto md:overflow-visible no-scrollbar pb-4 md:pb-0 snap-x snap-mandatory"
           >
             <AnimatePresence mode="popLayout">
               {sortedMeals.map((meal) => (
@@ -139,43 +144,43 @@ export default function Menu() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3 }}
-                  className={`bg-surface-container-lowest rounded-lg overflow-hidden group shadow-[0_40px_60px_-15px_rgba(36,48,54,0.06)] border-2 transition-colors duration-500 ${meal.category === activeCategory ? 'border-primary/20' : 'border-transparent'}`}
+                  className={`flex-shrink-0 w-[280px] md:w-auto snap-center bg-surface-container-lowest rounded-lg overflow-hidden group shadow-[0_20px_40px_-15px_rgba(36,48,54,0.06)] md:shadow-[0_40px_60px_-15px_rgba(36,48,54,0.06)] border-2 transition-colors duration-500 ${meal.category === activeCategory ? 'border-primary/20' : 'border-transparent'}`}
                 >
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="relative h-48 md:h-64 overflow-hidden">
                     <img alt={meal.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" src={meal.img} referrerPolicy="no-referrer" />
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      <div className="glass-panel px-3 py-1 rounded-sm text-[10px] font-black text-primary uppercase tracking-widest shadow-sm">{meal.category}</div>
-                      <div className="bg-secondary/90 backdrop-blur-md px-3 py-1 rounded-sm text-[10px] font-bold text-on-secondary uppercase tracking-tighter shadow-sm">{meal.tag}</div>
+                    <div className="absolute top-3 left-3 md:top-4 md:left-4 flex flex-col gap-1.5 md:gap-2">
+                      <div className="glass-panel px-2 py-0.5 md:px-3 md:py-1 rounded-sm text-[8px] md:text-[10px] font-black text-primary uppercase tracking-widest shadow-sm">{meal.category}</div>
+                      <div className="bg-secondary/90 backdrop-blur-md px-2 py-0.5 md:px-3 md:py-1 rounded-sm text-[8px] md:text-[10px] font-bold text-on-secondary uppercase tracking-tighter shadow-sm">{meal.tag}</div>
                     </div>
                   </div>
-                  <div className="p-6">
-                    <h3 className="font-headline text-2xl font-bold text-on-surface mb-2">{meal.name}</h3>
-                    <p className="text-on-surface-variant text-sm mb-6 leading-relaxed">{meal.desc}</p>
-                    <div className="grid grid-cols-4 gap-2 mb-8">
-                      <div className="bg-surface-container-low p-2 rounded text-center">
-                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase">Cals</span>
-                        <span className="font-headline font-bold text-primary">{meal.cals}</span>
+                  <div className="p-4 md:p-6">
+                    <h3 className="font-headline text-xl md:text-2xl font-bold text-on-surface mb-1 md:mb-2 truncate">{meal.name}</h3>
+                    <p className="text-on-surface-variant text-xs md:text-sm mb-4 md:mb-6 leading-relaxed line-clamp-2 md:line-clamp-none h-8 md:h-auto">{meal.desc}</p>
+                    <div className="grid grid-cols-4 gap-1.5 md:gap-2 mb-6 md:mb-8">
+                      <div className="bg-surface-container-low p-1.5 md:p-2 rounded text-center">
+                        <span className="block text-[8px] md:text-[10px] font-bold text-on-surface-variant uppercase">Cals</span>
+                        <span className="font-headline font-bold text-primary text-sm md:text-base">{meal.cals}</span>
                       </div>
-                      <div className="bg-secondary-container p-2 rounded text-center">
-                        <span className="block text-[10px] font-bold text-on-secondary-container uppercase">Prot</span>
-                        <span className="font-headline font-bold text-secondary-dim">{meal.prot}</span>
+                      <div className="bg-secondary-container p-1.5 md:p-2 rounded text-center">
+                        <span className="block text-[8px] md:text-[10px] font-bold text-on-secondary-container uppercase">Prot</span>
+                        <span className="font-headline font-bold text-secondary-dim text-sm md:text-base">{meal.prot}</span>
                       </div>
-                      <div className="bg-surface-container-low p-2 rounded text-center">
-                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase">Carb</span>
-                        <span className="font-headline font-bold text-on-surface">{meal.carb}</span>
+                      <div className="bg-surface-container-low p-1.5 md:p-2 rounded text-center">
+                        <span className="block text-[8px] md:text-[10px] font-bold text-on-surface-variant uppercase">Carb</span>
+                        <span className="font-headline font-bold text-on-surface text-sm md:text-base">{meal.carb}</span>
                       </div>
-                      <div className="bg-surface-container-low p-2 rounded text-center">
-                        <span className="block text-[10px] font-bold text-on-surface-variant uppercase">Fat</span>
-                        <span className="font-headline font-bold text-on-surface">{meal.fat}</span>
+                      <div className="bg-surface-container-low p-1.5 md:p-2 rounded text-center">
+                        <span className="block text-[8px] md:text-[10px] font-bold text-on-surface-variant uppercase">Fat</span>
+                        <span className="font-headline font-bold text-on-surface text-sm md:text-base">{meal.fat}</span>
                       </div>
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => addToCart(meal)}
-                      className="w-full py-4 bg-surface-container-highest text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary hover:text-on-primary transition-all duration-300"
+                      className="w-full py-3 md:py-4 bg-surface-container-highest text-primary font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-primary hover:text-on-primary transition-all duration-300 text-sm md:text-base"
                     >
-                      <span className="material-symbols-outlined">add_circle</span>
+                      <span className="material-symbols-outlined text-lg md:text-xl">add_circle</span>
                       Quick Add
                     </motion.button>
                   </div>
