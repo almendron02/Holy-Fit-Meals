@@ -1,0 +1,86 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: userId (UID)
+    // Fields:
+    //   - uid: string (required) - Firebase Auth UID
+    //   - email: string (required) - User email
+    //   - displayName: string (optional) - User display name
+    //   - createdAt: string (optional) - ISO 8601 creation timestamp
+    //
+    // Collection: orders
+    // Document ID: orderId
+    // Fields:
+    //   - orderId: string (required) - Unique order ID
+    //   - uid: string (required) - User UID
+    //   - items: list (required) - List of meals ordered
+    //   - total: number (required) - Total order amount
+    //   - status: string (required) - Order status (pending, paid, delivered)
+    //   - createdAt: string (required) - ISO 8601 creation timestamp
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.uid;
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidDateString(dateStr) {
+      return dateStr is string && dateStr.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z?$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+             data.uid == request.auth.uid &&
+             isValidEmail(data.email) &&
+             (data.keys().hasOnly(['uid', 'email', 'displayName', 'createdAt']));
+    }
+
+    function isValidOrder(data) {
+      return data.keys().hasAll(['orderId', 'uid', 'items', 'total', 'status', 'createdAt']) &&
+             data.uid == request.auth.uid &&
+             data.items is list &&
+             data.total is number &&
+             data.status in ['pending', 'paid', 'delivered'] &&
+             isValidDateString(data.createdAt) &&
+             (data.keys().hasOnly(['orderId', 'uid', 'items', 'total', 'status', 'createdAt']));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    match /users/{userId} {
+      allow read: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data);
+    }
+
+    match /orders/{orderId} {
+      allow read: if isDocOwner();
+      allow create: if isAuthenticated() && request.resource.data.uid == request.auth.uid && isValidOrder(request.resource.data);
+      allow update: if isDocOwner() && isValidOrder(request.resource.data) && request.resource.data.uid == resource.data.uid;
+    }
+  }
+}
