@@ -1,7 +1,45 @@
 import { motion } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function Home() {
+  const navigate = useNavigate();
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+
+  const handlePlanSelect = async (plan: any) => {
+    setLoadingPlan(plan.name);
+    try {
+      const response = await fetch('/.netlify/functions/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [{
+            name: `${plan.name} Plan`,
+            price: parseFloat(plan.price),
+            quantity: 1,
+            img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDF8czjo3zSU0mX8HUjCM10UEk8NXwCrbPwxFEJc5an_s8HSb06uH9JCPKZqfty8N43vWI6LRPkX4JkuOXQlpN5Q8t4MHhJwa0SslNqhLBuzo4hcRybMtMtL_zjCSAvr1lB9s9uEjJUJuQCSlux2bSnFRLDTzYEvxz3CeBdgJ5WeXbcdKqS9RUkgkZcQMiyIKXVMJ82lSQm-m_2gdcFVZPG-nGPBtWjSQ0rqlI7pyTYZjY1yPaNCsZdJysM1MtfMYWutNWY3cbd5Q'
+          }],
+          mode: 'subscription',
+          successUrl: `${window.location.origin}/checkout?status=success`,
+          cancelUrl: `${window.location.origin}/`,
+        }),
+      });
+
+      const session = await response.json();
+      if (session.url) {
+        if (window.self !== window.top) {
+          window.open(session.url, '_blank');
+        } else {
+          window.location.href = session.url;
+        }
+      }
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <main className="pt-24">
       <section className="relative px-6 py-16 md:py-24 overflow-hidden">
@@ -129,8 +167,12 @@ export default function Home() {
                     </li>
                   ))}
                 </ul>
-                <button className={`w-full py-4 rounded-xl font-bold transition-all ${plan.popular ? 'bg-white text-primary' : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'}`}>
-                  Get Started
+                <button 
+                  onClick={() => handlePlanSelect(plan)}
+                  disabled={loadingPlan !== null}
+                  className={`w-full py-4 rounded-xl font-bold transition-all ${plan.popular ? 'bg-white text-primary' : 'border-2 border-primary text-primary hover:bg-primary hover:text-white'} disabled:opacity-50`}
+                >
+                  {loadingPlan === plan.name ? 'Processing...' : 'Get Started'}
                 </button>
               </motion.div>
             ))}

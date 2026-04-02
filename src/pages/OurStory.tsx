@@ -1,35 +1,147 @@
 import { motion } from 'motion/react';
+import React, { useState } from 'react';
 
 export default function OurStory() {
+  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('loading');
+    setErrorMessage('');
+
+    try {
+      const response = await fetch('/.netlify/functions/send-contact-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setStatus('success');
+        setFormData({ name: '', email: '', message: '' });
+      } else {
+        throw new Error(result.error || 'Failed to send message');
+      }
+    } catch (error: any) {
+      setStatus('error');
+      setErrorMessage(error.message);
+    }
+  };
+
   return (
     <main className="pt-20">
-      {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            alt="Family in Miami Kitchen"
-            className="w-full h-full object-cover"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCbQSbdMj1-y6vJGV5UsiYMXJJ8uw1LC42P8OWTH-TboLN-xw_U__wRvcr1JdcSwoWyeBuvi3DKC0HWgs68vZxqf9EyIwoXEkX4mxwskWAYnjy7waUwX92drRghR3I1YTI2Dm3CwfACGTy7JPmLsgxGiRmIluBKBPJ0SPgxycwWRJzIeUKWJtkqAK_RCg4pooLkYiO4XlpQIs-KrST0HbzQVP0jvu1qRe0FYK4CuNObpKV1uR3FOfDojmhmisH_9UE10tRZvUg29Q"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-black/30"></div>
-        </div>
-        <div className="relative z-10 max-w-4xl px-6 text-center">
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-headline text-5xl md:text-7xl font-extrabold text-white leading-none tracking-tighter mb-6"
+      {/* Contact Form Section (Replaces Hero) */}
+      <section className="relative py-20 px-6 bg-surface-container-low overflow-hidden">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            From Our Miami <br /><span className="text-primary-fixed">Kitchen to Your Table.</span>
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-white text-lg md:text-xl max-w-2xl mx-auto font-medium opacity-90"
+            <span className="inline-block bg-primary-container text-on-primary-container font-bold px-4 py-1.5 rounded-full mb-6 uppercase tracking-wider text-xs">Get in Touch</span>
+            <h1 className="font-headline text-5xl md:text-7xl font-extrabold text-on-surface leading-tight mb-6 tracking-tighter">
+              Questions? <br /><span className="text-primary italic">We'd love to hear from you.</span>
+            </h1>
+            <p className="text-on-surface-variant text-lg leading-relaxed mb-8 max-w-lg">
+              Whether you have a question about our menu, delivery zones, or just want to say hi, our team is ready to help.
+            </p>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-4 text-on-surface">
+                <span className="material-symbols-outlined text-primary">mail</span>
+                <span className="font-medium">angelo.mgleza@gmail.com</span>
+              </div>
+              <div className="flex items-center gap-4 text-on-surface">
+                <span className="material-symbols-outlined text-primary">location_on</span>
+                <span className="font-medium">Serving the Greater Miami Area</span>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-surface-container-lowest p-8 md:p-10 rounded-3xl shadow-ambient border border-outline-variant"
           >
-            Hand-crafted meals fueled by Cuban heritage and a passion for peak performance.
-          </motion.p>
+            {status === 'success' ? (
+              <div className="text-center py-12">
+                <div className="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                  <span className="material-symbols-outlined text-5xl">check_circle</span>
+                </div>
+                <h3 className="text-2xl font-headline font-bold mb-4">Message Sent!</h3>
+                <p className="text-on-surface-variant mb-8">Thank you for reaching out. We'll get back to you as soon as possible.</p>
+                <button
+                  onClick={() => setStatus('idle')}
+                  className="px-8 py-3 bg-primary text-on-primary rounded-full font-bold"
+                >
+                  Send Another Message
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <label htmlFor="name" className="text-sm font-bold text-on-surface ml-1">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-5 py-4 rounded-2xl bg-surface-container border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                    placeholder="Your name"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-bold text-on-surface ml-1">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-5 py-4 rounded-2xl bg-surface-container border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="message" className="text-sm font-bold text-on-surface ml-1">Message</label>
+                  <textarea
+                    id="message"
+                    required
+                    rows={4}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full px-5 py-4 rounded-2xl bg-surface-container border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all resize-none"
+                    placeholder="How can we help?"
+                  ></textarea>
+                </div>
+
+                {status === 'error' && (
+                  <div className="p-4 bg-error-container text-on-error-container rounded-xl text-sm flex items-center gap-3">
+                    <span className="material-symbols-outlined">error</span>
+                    {errorMessage}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === 'loading'}
+                  className="w-full py-5 hero-gradient text-on-primary rounded-2xl font-headline font-extrabold text-lg shadow-ambient flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {status === 'loading' ? (
+                    'Sending...'
+                  ) : (
+                    <>
+                      SEND MESSAGE
+                      <span className="material-symbols-outlined">send</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+          </motion.div>
         </div>
       </section>
 

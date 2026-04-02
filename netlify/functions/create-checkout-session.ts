@@ -20,7 +20,7 @@ const handler: Handler = async (event) => {
   }
 
   try {
-    const { items, successUrl, cancelUrl } = JSON.parse(event.body || "{}");
+    const { items, successUrl, cancelUrl, mode = "payment" } = JSON.parse(event.body || "{}");
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -29,13 +29,16 @@ const handler: Handler = async (event) => {
           currency: "usd",
           product_data: {
             name: item.name,
-            images: [item.img],
+            images: item.img ? [item.img] : [],
           },
           unit_amount: Math.round(item.price * 100),
+          ...(mode === "subscription" && {
+            recurring: { interval: "week" },
+          }),
         },
-        quantity: item.quantity,
+        quantity: item.quantity || 1,
       })),
-      mode: "payment",
+      mode: mode as Stripe.Checkout.SessionCreateParams.Mode,
       success_url: successUrl,
       cancel_url: cancelUrl,
     });
