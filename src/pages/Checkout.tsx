@@ -29,8 +29,8 @@ export default function Checkout() {
     setError('');
 
     try {
-      // 1. Create a checkout session on the server
-      const response = await fetch('/api/create-checkout-session', {
+      // 1. Create a checkout session on the server (using Netlify Function path)
+      const response = await fetch('/.netlify/functions/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -48,7 +48,26 @@ export default function Checkout() {
 
       // 2. Redirect to Stripe Checkout
       if (session.url) {
-        window.location.href = session.url;
+        // Check if we are in an iframe (like the AI Studio preview)
+        if (window.self !== window.top) {
+          // Try to open in a new tab if in an iframe
+          const newWindow = window.open(session.url, '_blank');
+          if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+            // If popup is blocked, try top-level redirect
+            try {
+              window.top!.location.href = session.url;
+            } catch (e) {
+              // Fallback: inform the user
+              setError('Stripe Checkout was blocked by your browser. Please open this app in a new tab to complete your purchase.');
+              setLoading(false);
+            }
+          } else {
+            setLoading(false);
+            setError('Checkout opened in a new tab. Please complete your payment there.');
+          }
+        } else {
+          window.location.href = session.url;
+        }
       } else {
         throw new Error('Failed to create checkout session');
       }

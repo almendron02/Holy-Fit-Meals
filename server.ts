@@ -26,6 +26,39 @@ async function startServer() {
     res.json({ status: "ok", stripeConfigured: !!stripe });
   });
 
+  // Netlify Function compatibility route for local development
+  app.post("/.netlify/functions/create-checkout-session", async (req, res) => {
+    if (!stripe) {
+      return res.status(500).json({ error: "Stripe is not configured" });
+    }
+
+    const { items, successUrl, cancelUrl } = req.body;
+
+    try {
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: items.map((item: any) => ({
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: item.name,
+              images: [item.img],
+            },
+            unit_amount: Math.round(item.price * 100),
+          },
+          quantity: item.quantity,
+        })),
+        mode: "payment",
+        success_url: successUrl,
+        cancel_url: cancelUrl,
+      });
+
+      res.json({ url: session.url });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   app.post("/api/create-checkout-session", async (req, res) => {
     if (!stripe) {
       return res.status(500).json({ error: "Stripe is not configured" });
