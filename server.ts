@@ -48,7 +48,7 @@ async function startServer() {
         cancel_url: cancelUrl,
       });
 
-      res.json({ id: session.id });
+      res.json({ url: session.url });
     } catch (error: any) {
       res.status(500).json({ error: error.message });
     }

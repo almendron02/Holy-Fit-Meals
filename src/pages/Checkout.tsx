@@ -3,21 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { useCart } from '../contexts/CartContext';
 import { useFirebase } from '../contexts/FirebaseContext';
-import { loadStripe } from '@stripe/stripe-js';
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-let stripePromise: any = null;
-const getStripe = () => {
-  if (!stripePromise) {
-    const key = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
-    if (!key) {
-      throw new Error('Stripe Publishable Key is missing. Please add VITE_STRIPE_PUBLISHABLE_KEY to your environment variables in the Secrets panel.');
-    }
-    stripePromise = loadStripe(key);
-  }
-  return stripePromise;
-};
 
 export default function Checkout() {
   const { cart, subtotal, clearCart } = useCart();
@@ -59,13 +47,10 @@ export default function Checkout() {
       }
 
       // 2. Redirect to Stripe Checkout
-      const stripe = await getStripe();
-      const { error: stripeError } = await (stripe as any)!.redirectToCheckout({
-        sessionId: session.id,
-      });
-
-      if (stripeError) {
-        throw new Error(stripeError.message);
+      if (session.url) {
+        window.location.href = session.url;
+      } else {
+        throw new Error('Failed to create checkout session');
       }
     } catch (err: any) {
       setError(err.message);
